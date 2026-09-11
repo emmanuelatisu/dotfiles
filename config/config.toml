@@ -20,3 +20,4 @@ builtin = "history-watch"
 "~/.config/nvim" = { mode = "track" }
 "~/.config/tmux/tmux.conf" = { mode = "track" }
 "~/.gitconfig" = { mode = "track" }
+"~/.profile" = { mode = "track" }

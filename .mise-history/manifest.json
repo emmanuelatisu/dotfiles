@@ -36,6 +36,12 @@
       "autosave": true,
       "encrypt": false,
       "variants": []
+    },
+    {
+      "path": "home/.profile",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
     }
   ],
   "exclude": [],
@@ -64,6 +70,7 @@
     "home/.config/nvim/lua/plugins/snacks.lua": 436,
     "home/.config/nvim/stylua.toml": 436,
     "home/.config/tmux/tmux.conf": 436,
-    "home/.gitconfig": 436
+    "home/.gitconfig": 436,
+    "home/.profile": 436
   }
 }
