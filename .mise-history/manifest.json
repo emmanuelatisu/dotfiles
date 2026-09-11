@@ -14,12 +14,6 @@
       "variants": []
     },
     {
-      "path": "home/.config/git/ignore",
-      "autosave": true,
-      "encrypt": false,
-      "variants": []
-    },
-    {
       "path": "home/.config/nvim",
       "autosave": true,
       "encrypt": false,
@@ -37,7 +31,6 @@
   "permissions": {
     "config/config.toml": 436,
     "home/.bashrc": 436,
-    "home/.config/git/ignore": 436,
     "home/.config/nvim": 509,
     "home/.config/nvim/.neoconf.json": 436,
     "home/.config/nvim/docs": 509,
