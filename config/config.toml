@@ -5,6 +5,7 @@ node = "latest"
 ripgrep = "latest"
 fd = "latest"
 zoxide = "latest"
+gh = "latest"
 
 [tools."aqua:tmux/tmux-builds"]
 version = "latest"
