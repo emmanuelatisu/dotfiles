@@ -6,6 +6,10 @@ ripgrep = "latest"
 fd = "latest"
 zoxide = "latest"
 
+[tools."aqua:tmux/tmux-builds"]
+version = "latest"
+os = ["linux"]
+
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
