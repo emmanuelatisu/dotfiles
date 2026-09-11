@@ -14,7 +14,19 @@
       "variants": []
     },
     {
+      "path": "home/.config/gh/config.yml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "home/.config/nvim",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "home/.config/tmux/tmux.conf",
       "autosave": true,
       "encrypt": false,
       "variants": []
@@ -31,6 +43,7 @@
   "permissions": {
     "config/config.toml": 436,
     "home/.bashrc": 436,
+    "home/.config/gh/config.yml": 384,
     "home/.config/nvim": 509,
     "home/.config/nvim/.neoconf.json": 436,
     "home/.config/nvim/docs": 509,
@@ -50,6 +63,7 @@
     "home/.config/nvim/lua/plugins/example.lua": 436,
     "home/.config/nvim/lua/plugins/snacks.lua": 436,
     "home/.config/nvim/stylua.toml": 436,
+    "home/.config/tmux/tmux.conf": 436,
     "home/.gitconfig": 436
   }
 }
