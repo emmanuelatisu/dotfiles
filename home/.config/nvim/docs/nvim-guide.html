@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neovim C# Field Guide</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600;700&display=swap">
+<style>
+  /* Standalone-file basics; the artifact host used to supply these. */
+  :root { color-scheme: light dark; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  /* ---- Light palette: complete token set, cool-biased neutrals ---- */
+  :root {
+    --ground:      #f6f7fb;
+    --surface:     #ffffff;
+    --surface-sunk:#eef0f7;
+    --ink:         #191b26;
+    --ink-soft:    #4d5266;
+    --ink-faint:   #767c92;
+    --rule:        #dde1ed;
+    --rule-strong: #c3c9db;
+    --accent:      #3550b8;
+    --accent-soft: #e9edf9;
+    --key-bg:      #eceffa;
+    --key-ink:     #2c3c85;
+    --key-rule:    #ccd4ee;
+    --ok:          #2f6b3a;
+    --ok-bg:       #e4f0e6;
+    --wait:        #8a5a11;
+    --wait-bg:     #f8ecd8;
+    --shadow:      0 1px 2px rgba(25,27,38,.05), 0 8px 24px -16px rgba(25,27,38,.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #14151d;
+      --surface:     #1c1e29;
+      --surface-sunk:#232634;
+      --ink:         #ccd1e0;
+      --ink-soft:    #969db4;
+      --ink-faint:   #737a91;
+      --rule:        #2b2f3f;
+      --rule-strong: #3b4055;
+      --accent:      #8fabf5;
+      --accent-soft: #1e2333;
+      --key-bg:      #262b3d;
+      --key-ink:     #a8bdf7;
+      --key-rule:    #363d55;
+      --ok:          #9bd07d;
+      --ok-bg:       #1f2a20;
+      --wait:        #e5a463;
+      --wait-bg:     #2c2317;
+      --shadow:      0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:      #14151d;
+    --surface:     #1c1e29;
+    --surface-sunk:#232634;
+    --ink:         #ccd1e0;
+    --ink-soft:    #969db4;
+    --ink-faint:   #737a91;
+    --rule:        #2b2f3f;
+    --rule-strong: #3b4055;
+    --accent:      #8fabf5;
+    --accent-soft: #1e2333;
+    --key-bg:      #262b3d;
+    --key-ink:     #a8bdf7;
+    --key-rule:    #363d55;
+    --ok:          #9bd07d;
+    --ok-bg:       #1f2a20;
+    --wait:        #e5a463;
+    --wait-bg:     #2c2317;
+    --shadow:      0 1px 2px rgba(0,0,0,.3), 0 8px 24px -16px rgba(0,0,0,.6);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 28px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
+
+  /* ---- Masthead ---- */
+  .masthead { display: flex; flex-direction: column; gap: 18px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  h1 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: clamp(28px, 4.4vw, 40px);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .standfirst {
+    margin: 0;
+    max-width: 64ch;
+    font-size: 16.5px;
+    color: var(--ink-soft);
+  }
+  .standfirst strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- Status pills ---- */
+  .status { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .pill {
+    display: inline-flex; align-items: baseline; gap: 7px;
+    padding: 5px 11px 6px;
+    border-radius: 999px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .pill.ok   { background: var(--ok-bg);   color: var(--ok);   border-color: color-mix(in srgb, var(--ok) 26%, transparent); }
+  .pill.wait { background: var(--wait-bg); color: var(--wait); border-color: color-mix(in srgb, var(--wait) 30%, transparent); }
+  .pill em { font-style: normal; opacity: .72; font-weight: 400; }
+
+  /* ---- Section scaffolding ---- */
+  section { display: flex; flex-direction: column; gap: 18px; }
+  h2 {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .lede { margin: 0; max-width: 68ch; color: var(--ink-soft); }
+  .lede code, p code, li code, dd code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .9em; color: var(--ink); background: var(--surface-sunk); padding: .1em .35em; border-radius: 3px; }
+
+  /* ---- Do-this-first: an ordered sequence, so numbered ---- */
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 14px; }
+  ol.steps > li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--key-rule);
+    border-radius: 5px;
+    height: 24px; display: grid; place-items: center;
+  }
+  ol.steps h3 { margin: 0 0 3px; font-size: 15px; font-weight: 600; }
+  ol.steps p  { margin: 0; color: var(--ink-soft); max-width: 62ch; }
+
+  pre {
+    margin: 9px 0 0;
+    padding: 11px 13px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 7px;
+    overflow-x: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  pre .c { color: var(--ink-faint); }
+
+  /* ---- Key chips ---- */
+  kbd {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--key-bg);
+    color: var(--key-ink);
+    border: 1px solid var(--key-rule);
+    border-radius: 4px;
+    padding: 2px 6px 3px;
+    white-space: nowrap;
+  }
+
+  /* ---- Keymap rows ---- */
+  .keys { margin: 0; display: flex; flex-direction: column; }
+  .keys > div {
+    display: grid;
+    grid-template-columns: minmax(118px, max-content) 1fr;
+    gap: 6px 14px;
+    padding: 7px 0;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .keys > div:first-child { border-top: none; }
+  .keys dt { margin: 0; }
+  .keys dd { margin: 0; color: var(--ink-soft); }
+  .keys dd b { color: var(--ink); font-weight: 500; }
+
+  /* ---- Prefix groups: the tree you see when you press space ---- */
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(316px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  .group {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 9px;
+    padding: 16px 17px 14px;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .group-head { display: flex; flex-direction: column; gap: 5px; }
+  .group-title { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+  .group-title .prefix {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px; font-weight: 600;
+    color: var(--accent);
+  }
+  .group-title h3 {
+    margin: 0;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: .11em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .group-note { margin: 0; font-size: 13px; color: var(--ink-faint); max-width: 46ch; }
+
+  /* ---- Notes / gotchas ---- */
+  .notes { display: flex; flex-direction: column; gap: 16px; }
+  .note { display: grid; grid-template-columns: minmax(150px, 190px) 1fr; gap: 6px 20px; padding-top: 15px; border-top: 1px solid var(--rule); }
+  .note:first-child { border-top: none; padding-top: 0; }
+  .note h3 { margin: 0; font-size: 14px; font-weight: 600; }
+  .note p { margin: 0; color: var(--ink-soft); max-width: 66ch; }
+  .note p + p { margin-top: 7px; }
+
+  /* ---- File map ---- */
+  .filemap { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; }
+  .filemap > div { display: grid; grid-template-columns: minmax(190px, max-content) 1fr; gap: 4px 18px; padding: 6px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+  .filemap > div:first-child { border-top: none; }
+  .filemap .path { color: var(--key-ink); }
+  .filemap .what { font-family: "IBM Plex Sans", sans-serif; color: var(--ink-soft); font-size: 13.5px; }
+
+  footer { color: var(--ink-faint); font-size: 13px; border-top: 1px solid var(--rule-strong); padding-top: 18px; }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:focus-visible, kbd:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 620px) {
+    .wrap { padding: 28px 18px 72px; gap: 36px; }
+    .note { grid-template-columns: 1fr; }
+    .keys > div { grid-template-columns: 1fr; }
+    .filemap > div { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">LazyVim &middot; Neovim 0.12.5 &middot; Roslyn &middot; Windows</div>
+    <h1>Neovim C# Field Guide</h1>
+    <p class="standfirst">
+      Your config is <strong>LazyVim plus one override file</strong>. Leader is <kbd>Space</kbd> &mdash;
+      press it and wait, and which-key shows you this tree. Two things to internalise on day one:
+      <strong>Roslyn is the language server, never OmniSharp</strong>, and .NET commands live under
+      <kbd>Space</kbd><kbd>m</kbd>.
+    </p>
+    <div class="status">
+      <span class="pill ok">Roslyn attached <em>diagnostics verified</em></span>
+      <span class="pill ok">Solution mode <em>.slnx</em></span>
+      <span class="pill ok">yamlls + SchemaStore</span>
+      <span class="pill ok">44 plugins</span>
+      <span class="pill ok">27 parsers</span>
+      <span class="pill ok">jj &rarr; Esc</span>
+      <span class="pill wait">Nerd Font <em>needs an elevated shell</em></span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Do this first</h2>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Run <code>:Tutor</code>, properly, before customising anything</h3>
+          <p>Thirty minutes. It is the difference between fighting the editor and using it, and it teaches the motions in the next section by making you use them. The LazyVim starter disables <code>:Tutor</code>; it has been re-enabled in <code>lua/config/lazy.lua</code> specifically so you can do this.</p>
+          <p style="margin-top:7px">The trap at this stage is rebinding keys you have not learned yet. Almost every key that feels awkward in week one feels correct in week three.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Install the Nerd Font &mdash; the only thing still outstanding</h3>
+          <p>The winget package is a WiX/MSI, so it needs <b>an elevated shell</b>; a normal prompt fails without saying why. Run this as Administrator, then <b>restart Windows Terminal</b> &mdash; it caches the font list at launch.</p>
+          <pre>winget install --id DEVCOM.JetBrainsMonoNerdFont --exact</pre>
+          <p style="margin-top:9px">Then set it on your PowerShell profile. Pick <b>JetBrainsMono Nerd Font Mono</b>, not Propo &mdash; only the Mono variant has strictly single-width glyphs, which is what keeps the gutter and statusline aligned:</p>
+          <pre>"font": { "face": "JetBrainsMono Nerd Font Mono" }</pre>
+          <p style="margin-top:9px">Until then icons render as empty boxes. Nothing else breaks.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Never enable the <code>lang.dotnet</code> extra</h3>
+          <p><code>:LazyExtras</code> lists it and it looks like exactly what you want. It configures <b>OmniSharp</b>, which is discontinued and cannot parse modern C#. Enabling it starts a second, worse language server alongside Roslyn. There are comments saying so in both <code>lazy.lua</code> and <code>dotnet.lua</code>.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Moving fast</h2>
+    <p class="lede">
+      The whole point of this editor. Grouped by <b>how far you are going</b>, because that is what
+      picks the motion &mdash; reaching for the wrong scale is what makes editing feel slow.
+      Everything here is verified bound in your config.
+    </p>
+    <div class="groups">
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">1</span><h3>within the line</h3></div>
+          <p class="group-note">Never hold <kbd>l</kbd> or <kbd>w</kbd>. Aim at a character instead.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>f{char}</kbd></dt><dd><b>Jump forward to a character.</b> The highest-value motion in Vim &mdash; learn this one first</dd></div>
+          <div><dt><kbd>F{char}</kbd></dt><dd>Same, backwards</dd></div>
+          <div><dt><kbd>t{char}</kbd></dt><dd>Jump up to <em>just before</em> a character &mdash; pairs with <kbd>ct;</kbd></dd></div>
+          <div><dt><kbd>;</kbd> <kbd>,</kbd></dt><dd><b>Repeat that jump</b> forward / backward. <kbd>f(</kbd> then <kbd>;;</kbd> beats counting</dd></div>
+          <div><dt><kbd>w</kbd> <kbd>b</kbd> <kbd>e</kbd></dt><dd>Word forward / back / end of word</dd></div>
+          <div><dt><kbd>W</kbd> <kbd>B</kbd></dt><dd>Same but whitespace-delimited &mdash; skips over <code>foo.Bar(baz)</code> in one go</dd></div>
+          <div><dt><kbd>^</kbd> <kbd>$</kbd></dt><dd>First non-blank / end of line</dd></div>
+          <div><dt><kbd>%</kbd></dt><dd><b>Jump to the matching bracket.</b> Invaluable in C#</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">2</span><h3>within the screen</h3></div>
+          <p class="group-note">flash.nvim, which LazyVim ships. This is the motion that most changes how navigation feels.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>s{char}{char}</kbd></dt><dd><b>Flash jump.</b> Type two characters of where you want to be; every match gets a letter label, press it and you are there. Works anywhere on screen, in any direction</dd></div>
+          <div><dt><kbd>S</kbd></dt><dd><b>Flash Treesitter</b> &mdash; labels whole syntax nodes, so you can select a method or block without counting lines</dd></div>
+          <div><dt><kbd>C-d</kbd> <kbd>C-u</kbd></dt><dd>Half a screen down / up</dd></div>
+          <div><dt><kbd>zz</kbd> <kbd>zt</kbd> <kbd>zb</kbd></dt><dd>Redraw with the cursor line centred / at top / at bottom</dd></div>
+          <div><dt><kbd>H</kbd> <kbd>M</kbd> <kbd>L</kbd></dt><dd>Careful: normally top/middle/bottom of screen, but <b>LazyVim rebinds <kbd>H</kbd> and <kbd>L</kbd> to previous/next buffer</b></dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">3</span><h3>within the file</h3></div>
+          <p class="group-note">The <code>]</code> and <code>[</code> pairs are treesitter-aware, so they understand C# structure rather than guessing at braces.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>]f</kbd> <kbd>[f</kbd></dt><dd><b>Next / previous method</b></dd></div>
+          <div><dt><kbd>]c</kbd> <kbd>[c</kbd></dt><dd><b>Next / previous class</b></dd></div>
+          <div><dt><kbd>]a</kbd> <kbd>[a</kbd></dt><dd>Next / previous parameter</dd></div>
+          <div><dt><kbd>]F</kbd> <kbd>]C</kbd></dt><dd>Capital jumps to the <em>end</em> of the method / class instead</dd></div>
+          <div><dt><kbd>*</kbd> <kbd>#</kbd></dt><dd><b>Search the word under the cursor</b> forward / back. Poor man's find-references, and instant</dd></div>
+          <div><dt><kbd>{</kbd> <kbd>}</kbd></dt><dd>Previous / next blank line &mdash; rough block movement</dd></div>
+          <div><dt><kbd>gg</kbd> <kbd>G</kbd></dt><dd>Top / bottom. <kbd>42G</kbd> goes to line 42</dd></div>
+          <div><dt><kbd>ma</kbd> <kbd>`a</kbd></dt><dd>Set mark <kbd>a</kbd> / jump to it. Lowercase is per-file, uppercase is global</dd></div>
+          <div><dt><kbd>``</kbd></dt><dd><b>Back to where you just were.</b> Toggles between two spots</dd></div>
+          <div><dt><kbd>gi</kbd></dt><dd>Back to where you last typed, in insert mode</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">4</span><h3>across the codebase</h3></div>
+          <p class="group-note">Roslyn drives these. Bound only where a language server is attached.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>gd</kbd></dt><dd><b>Definition</b></dd></div>
+          <div><dt><kbd>gr</kbd></dt><dd><b>References</b></dd></div>
+          <div><dt><kbd>gI</kbd></dt><dd>Implementations &mdash; the one you want on an interface</dd></div>
+          <div><dt><kbd>gy</kbd></dt><dd>Type definition</dd></div>
+          <div><dt><kbd>K</kbd></dt><dd><b>Hover docs.</b> Twice to enter the window and scroll</dd></div>
+          <div><dt><kbd>gK</kbd></dt><dd>Signature help</dd></div>
+          <div><dt><kbd>gai</kbd> <kbd>gao</kbd></dt><dd>Call hierarchy, incoming / outgoing</dd></div>
+          <div><dt><kbd>]]</kbd> <kbd>[[</kbd></dt><dd>Next / previous reference to the symbol under the cursor</dd></div>
+          <div><dt><kbd>C-o</kbd> <kbd>C-i</kbd></dt><dd><b>Back / forward through the jumplist.</b> This is what makes <kbd>gd</kbd> safe to spam &mdash; dive in, then <kbd>C-o</kbd> your way home</dd></div>
+          <div><dt><kbd>]d</kbd> <kbd>[d</kbd></dt><dd>Next / previous diagnostic (<kbd>]e</kbd> errors only, <kbd>]w</kbd> warnings)</dd></div>
+          <div><dt><kbd>]q</kbd> <kbd>[q</kbd></dt><dd>Next / previous quickfix entry &mdash; how you walk build errors</dd></div>
+        </dl>
+      </div>
+
+    </div>
+    <p class="lede" style="margin-top:2px">
+      If you take two habits from this page: <kbd>C-o</kbd> to come back from any jump, and
+      <kbd>.</kbd> to repeat your last change. Those two do more for speed than any plugin.
+    </p>
+  </section>
+
+  <section>
+    <h2>Operators and text objects</h2>
+    <p class="lede">
+      This is the part that makes Vim a language rather than a keymap. Every edit is
+      <b>operator + text object</b>, and any combination works &mdash; you are not memorising
+      shortcuts, you are composing two small vocabularies.
+    </p>
+    <div class="groups">
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">verbs</span><h3>operators</h3></div>
+          <p class="group-note">Each waits for a motion or text object.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>c</kbd></dt><dd><b>Change</b> &mdash; delete and start typing</dd></div>
+          <div><dt><kbd>d</kbd></dt><dd>Delete</dd></div>
+          <div><dt><kbd>y</kbd></dt><dd>Yank (copy)</dd></div>
+          <div><dt><kbd>v</kbd></dt><dd>Select</dd></div>
+          <div><dt><kbd>&gt;</kbd> <kbd>&lt;</kbd></dt><dd>Indent / outdent</dd></div>
+          <div><dt><kbd>gc</kbd></dt><dd>Toggle comment (<kbd>gcc</kbd> for one line)</dd></div>
+          <div><dt><kbd>gsa</kbd></dt><dd>Add a surrounding pair; <kbd>gsd</kbd> deletes, <kbd>gsr</kbd> replaces</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">nouns</span><h3>text objects</h3></div>
+          <p class="group-note"><kbd>i</kbd> = inner (contents), <kbd>a</kbd> = around (contents plus delimiters). <code>f</code> and <code>c</code> come from mini.ai driving treesitter.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>iw</kbd> <kbd>aw</kbd></dt><dd>Word</dd></div>
+          <div><dt><kbd>i"</kbd> <kbd>i'</kbd></dt><dd>Inside quotes</dd></div>
+          <div><dt><kbd>i(</kbd> <kbd>i{</kbd> <kbd>i[</kbd></dt><dd>Inside brackets</dd></div>
+          <div><dt><kbd>it</kbd> <kbd>at</kbd></dt><dd>XML/HTML tag &mdash; works in <code>.csproj</code></dd></div>
+          <div><dt><kbd>if</kbd> <kbd>af</kbd></dt><dd><b>Function / method body</b></dd></div>
+          <div><dt><kbd>ic</kbd> <kbd>ac</kbd></dt><dd><b>Class</b></dd></div>
+          <div><dt><kbd>ip</kbd> <kbd>ap</kbd></dt><dd>Paragraph (blank-line delimited block)</dd></div>
+          <div><dt><kbd>an</kbd> <kbd>in</kbd></dt><dd><b>The NEXT one.</b> <kbd>cin(</kbd> changes the next parens, wherever they are</dd></div>
+          <div><dt><kbd>al</kbd> <kbd>il</kbd></dt><dd>The LAST one, searching backwards</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">combine</span><h3>worked examples</h3></div>
+          <p class="group-note">Read them aloud as verb + noun and they stop being arbitrary.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>ciw</kbd></dt><dd>Change this word</dd></div>
+          <div><dt><kbd>ci"</kbd></dt><dd>Replace a string's contents</dd></div>
+          <div><dt><kbd>daf</kbd></dt><dd><b>Delete this whole method</b></dd></div>
+          <div><dt><kbd>vac</kbd></dt><dd>Select the whole class</dd></div>
+          <div><dt><kbd>yi(</kbd></dt><dd>Copy the argument list</dd></div>
+          <div><dt><kbd>cin(</kbd></dt><dd>Change the <em>next</em> argument list</dd></div>
+          <div><dt><kbd>gsaiw"</kbd></dt><dd>Wrap this word in quotes</dd></div>
+          <div><dt><kbd>&gt;af</kbd></dt><dd>Indent the whole method</dd></div>
+          <div><dt><kbd>d2}</kbd></dt><dd>Counts work everywhere: delete two blocks</dd></div>
+          <div><dt><kbd>.</kbd></dt><dd><b>Repeat the whole thing</b> at the next spot</dd></div>
+          <div><dt><kbd>C-Space</kbd></dt><dd>Grow the selection by one syntax node &mdash; when you cannot recall the text object</dd></div>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>The leader tree</h2>
+    <p class="lede">Dumped from your live config, so this is what is actually bound. <kbd>Space</kbd><kbd>?</kbd> shows the same in the editor, filtered to the current buffer, and <kbd>Space</kbd><kbd>sk</kbd> searches every keymap.</p>
+    <div class="groups">
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;m</span><h3>dotnet &mdash; yours</h3></div>
+          <p class="group-note">easy-dotnet and roslyn.nvim. The only keys in this config that are not LazyVim's.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc mb</kbd></dt><dd><b>Build</b> project</dd></div>
+          <div><dt><kbd>Spc mB</kbd></dt><dd><b>Build solution</b></dd></div>
+          <div><dt><kbd>Spc mr</kbd></dt><dd>Run</dd></div>
+          <div><dt><kbd>Spc mw</kbd></dt><dd>Watch</dd></div>
+          <div><dt><kbd>Spc mt</kbd></dt><dd><b>Test runner</b></dd></div>
+          <div><dt><kbd>Spc mT</kbd></dt><dd>Test whole solution</dd></div>
+          <div><dt><kbd>Spc mg</kbd></dt><dd>Debug project</dd></div>
+          <div><dt><kbd>Spc md</kbd></dt><dd><b>Solution-wide diagnostics</b></dd></div>
+          <div><dt><kbd>Spc ms</kbd></dt><dd>User secrets</dd></div>
+          <div><dt><kbd>Spc ma</kbd></dt><dd>Add NuGet package</dd></div>
+          <div><dt><kbd>Spc mo</kbd></dt><dd>Outdated packages</dd></div>
+          <div><dt><kbd>Spc mn</kbd></dt><dd>New project or file</dd></div>
+          <div><dt><kbd>Spc mS</kbd></dt><dd>Select solution (easy-dotnet)</dd></div>
+          <div><dt><kbd>Spc mp</kbd></dt><dd><b>Pick Roslyn's solution</b></dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;s</span><h3>search</h3></div>
+          <p class="group-note">The big one. Grep lives here, <em>not</em> under <code>f</code>.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc /</kbd></dt><dd><b>Grep</b> the project</dd></div>
+          <div><dt><kbd>Spc sg</kbd></dt><dd>Grep (same, spelled out)</dd></div>
+          <div><dt><kbd>Spc sw</kbd></dt><dd>Grep word under cursor / selection</dd></div>
+          <div><dt><kbd>Spc sb</kbd></dt><dd>Search within this file</dd></div>
+          <div><dt><kbd>Spc sd</kbd></dt><dd>Diagnostics</dd></div>
+          <div><dt><kbd>Spc ss</kbd></dt><dd><b>Symbols in this file</b></dd></div>
+          <div><dt><kbd>Spc sS</kbd></dt><dd><b>Symbols across the solution</b></dd></div>
+          <div><dt><kbd>Spc sr</kbd></dt><dd>Search and replace</dd></div>
+          <div><dt><kbd>Spc sk</kbd></dt><dd>All keymaps</dd></div>
+          <div><dt><kbd>Spc sh</kbd></dt><dd>Help pages</dd></div>
+          <div><dt><kbd>Spc su</kbd></dt><dd>Undo tree</dd></div>
+          <div><dt><kbd>Spc sR</kbd></dt><dd>Resume last picker</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;f</span><h3>file / find</h3></div>
+          <p class="group-note">Files only. <code>fg</code> is <b>git-files</b>, not grep &mdash; the one key most likely to catch you out.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc Spc</kbd></dt><dd><b>Find files</b></dd></div>
+          <div><dt><kbd>Spc ff</kbd></dt><dd>Find files (same)</dd></div>
+          <div><dt><kbd>Spc fF</kbd></dt><dd>Find files in cwd, not root</dd></div>
+          <div><dt><kbd>Spc fg</kbd></dt><dd>Git-tracked files</dd></div>
+          <div><dt><kbd>Spc fr</kbd></dt><dd>Recent files</dd></div>
+          <div><dt><kbd>Spc ,</kbd></dt><dd>Buffers</dd></div>
+          <div><dt><kbd>Spc fc</kbd></dt><dd>Edit your config</dd></div>
+          <div><dt><kbd>Spc e</kbd></dt><dd><b>File explorer</b></dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;c</span><h3>code</h3></div>
+          <p class="group-note">Bound only where a language server attached, which is why they do not appear in a global keymap list.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc ca</kbd></dt><dd><b>Code action</b></dd></div>
+          <div><dt><kbd>Spc cr</kbd></dt><dd>Rename symbol</dd></div>
+          <div><dt><kbd>Spc cR</kbd></dt><dd>Rename file</dd></div>
+          <div><dt><kbd>Spc cc</kbd></dt><dd>Run CodeLens</dd></div>
+          <div><dt><kbd>Spc cs</kbd></dt><dd>Symbols (Trouble)</dd></div>
+          <div><dt><kbd>Spc cS</kbd></dt><dd>References/definitions (Trouble)</dd></div>
+          <div><dt><kbd>Spc cl</kbd></dt><dd>LSP info &mdash; <b>start here when C# misbehaves</b></dd></div>
+          <div><dt><kbd>Spc cm</kbd></dt><dd>Mason (tool installer)</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;d</span><h3>debug</h3></div>
+          <p class="group-note">LazyVim's dap group &mdash; <em>not</em> where the dotnet commands live. That clash is why they are on <code>m</code>.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc db</kbd></dt><dd>Toggle breakpoint</dd></div>
+          <div><dt><kbd>Spc dB</kbd></dt><dd><b>Conditional breakpoint</b></dd></div>
+          <div><dt><kbd>Spc dc</kbd></dt><dd><b>Run / continue</b></dd></div>
+          <div><dt><kbd>Spc dC</kbd></dt><dd>Run to cursor</dd></div>
+          <div><dt><kbd>Spc dO</kbd></dt><dd>Step over</dd></div>
+          <div><dt><kbd>Spc di</kbd></dt><dd>Step into</dd></div>
+          <div><dt><kbd>Spc do</kbd></dt><dd>Step out</dd></div>
+          <div><dt><kbd>Spc de</kbd></dt><dd><b>Evaluate</b></dd></div>
+          <div><dt><kbd>Spc du</kbd></dt><dd>Toggle debug UI</dd></div>
+          <div><dt><kbd>Spc dt</kbd></dt><dd>Terminate</dd></div>
+        </dl>
+      </div>
+
+      <div class="group">
+        <div class="group-head">
+          <div class="group-title"><span class="prefix">&lt;leader&gt;g x u q</span><h3>git, lists, ui, session</h3></div>
+          <p class="group-note">Worth knowing <code>gs</code>, <code>xx</code> and <code>?</code> exist; the rest can wait.</p>
+        </div>
+        <dl class="keys">
+          <div><dt><kbd>Spc gs</kbd></dt><dd>Git status</dd></div>
+          <div><dt><kbd>Spc gd</kbd></dt><dd>Diff hunks</dd></div>
+          <div><dt><kbd>]h</kbd> <kbd>[h</kbd></dt><dd>Next / previous git hunk</dd></div>
+          <div><dt><kbd>Spc xx</kbd></dt><dd><b>All diagnostics (Trouble)</b></dd></div>
+          <div><dt><kbd>Spc xt</kbd></dt><dd>TODO comments</dd></div>
+          <div><dt><kbd>Spc uG</kbd></dt><dd>Toggle git signs</dd></div>
+          <div><dt><kbd>Spc qs</kbd></dt><dd>Restore session for this directory</dd></div>
+          <div><dt><kbd>Spc n</kbd></dt><dd>Notification history</dd></div>
+          <div><dt><kbd>Spc ?</kbd></dt><dd><b>Every keymap in this buffer</b></dd></div>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>What is yours and what is LazyVim's</h2>
+    <p class="lede">Everything else in <code>~/AppData/Local/nvim</code> is the untouched LazyVim starter. Only 141 lines are hand-written &mdash; that is the point of the setup.</p>
+    <div class="filemap">
+      <div><span class="path">lua/plugins/dotnet.lua</span><span class="what"><b>107 lines &mdash; the real work.</b> roslyn.nvim, easy-dotnet, the Crashdummyy mason registry, and all the large-solution tuning</span></div>
+      <div><span class="path">lua/config/toolchain.lua</span><span class="what"><b>23 lines.</b> Puts gcc and the tree-sitter CLI on PATH before anything checks for them</span></div>
+      <div><span class="path">lua/config/autocmds.lua</span><span class="what"><b>8 lines.</b> The YAML <code>indentkeys</code> fix, the one editing behaviour LazyVim does not cover</span></div>
+      <div><span class="path">lua/config/keymaps.lua</span><span class="what"><b>1 line.</b> <kbd>jj</kbd> to leave insert mode</span></div>
+      <div><span class="path">init.lua</span><span class="what"><b>2 lines added.</b> Requires <code>config.toolchain</code> before LazyVim loads</span></div>
+      <div><span class="path">lua/config/lazy.lua</span><span class="what">LazyVim's, with five extras imported and <code>:Tutor</code> re-enabled</span></div>
+      <div><span class="path">lua/plugins/example.lua</span><span class="what">LazyVim's commented reference file. Harmless, and worth skimming</span></div>
+      <div><span class="path">lazy-lock.json</span><span class="what">Pins every plugin version. Commit this if you ever put the config in git</span></div>
+    </div>
+    <p class="lede" style="margin-top:4px">Enabled extras: <code>lang.yaml</code>, <code>lang.json</code>, <code>dap.core</code>, <code>formatting.prettier</code>, <code>coding.mini-surround</code>. Toggle more with <code>:LazyExtras</code>.</p>
+  </section>
+
+  <section>
+    <h2>Decisions behind this config</h2>
+    <p class="lede">Written down because they will look like mistakes later, and they are not.</p>
+    <div class="notes">
+
+      <div class="note">
+        <h3>Keymaps are Vim's, not Visual Studio's</h3>
+        <p>An earlier draft of this config aliased <kbd>F12</kbd>, <kbd>F2</kbd> and the <kbd>F5</kbd>&ndash;<kbd>F11</kbd> debug keys to match Visual Studio. That is gone deliberately. Porting VS bindings keeps you reaching for function keys and away from the motions that make this editor worth learning &mdash; and it fights every tutorial and colleague you will ever read.</p>
+        <p>The one exception is <kbd>jj</kbd> for <kbd>Esc</kbd>, which is not a VS habit but a Vim one: it removes finger travel from the single most-pressed key.</p>
+      </div>
+
+      <div class="note">
+        <h3>Roslyn, never OmniSharp</h3>
+        <p>OmniSharp is discontinued and does not understand modern C#. Most C#-in-Neovim guides &mdash; and LazyVim's own <code>lang.dotnet</code> extra &mdash; still use it. If you copy a snippet from a blog post and things get worse, check that first.</p>
+      </div>
+
+      <div class="note">
+        <h3>Diagnostics only for open files</h3>
+        <p>Roslyn's analyser and compiler scope is pinned to <code>openFiles</code>, and reference CodeLens is off. At 20+ projects the defaults re-analyse the whole solution continuously and the editor becomes unusable.</p>
+        <p>The trade: errors in files you have not opened will not appear as you type. Get those from <kbd>Spc mB</kbd> or <kbd>Spc md</kbd>, then walk them with <kbd>]q</kbd>.</p>
+      </div>
+
+      <div class="note">
+        <h3>One solution, locked</h3>
+        <p><code>lock_target</code> keeps Roslyn on the solution it picked first rather than re-resolving per buffer &mdash; on a large solution that means a full reload. Switch deliberately with <kbd>Spc mp</kbd>.</p>
+        <p>On .NET 10, <code>dotnet new sln</code> creates a <code>.slnx</code>. Both formats work, but a solution that does not actually list your project makes Roslyn fall back to single-project mode, and cross-project navigation quietly stops.</p>
+      </div>
+
+      <div class="note">
+        <h3>Dotnet keys are on <code>m</code>, not <code>d</code></h3>
+        <p><code>&lt;leader&gt;d</code> is LazyVim's debug group and <code>dap.core</code> already owns <code>db dc dr ds dt dw dB dC</code> and more &mdash; putting dotnet there shadowed almost every key. <code>&lt;leader&gt;cS</code> is Trouble's and <code>&lt;leader&gt;n</code> is noice's.</p>
+        <p><code>m</code> was chosen by dumping every leader key the enabled modules bind and taking one that was free, then confirming against the live config. Do the same for your own maps &mdash; <kbd>Spc sk</kbd> lists everything.</p>
+      </div>
+
+      <div class="note">
+        <h3>C# formats via the language server</h3>
+        <p>No CSharpier. Formatting goes through Roslyn, so your <code>.editorconfig</code> is the single source of truth &mdash; shared with everyone on the team still using Visual Studio or Rider. YAML, JSON and Markdown use prettier.</p>
+      </div>
+
+      <div class="note">
+        <h3>The compiler is MinGW, not zig</h3>
+        <p>Worth knowing precisely, because the internet will tell you otherwise. nvim-treesitter's <code>main</code> branch delegates compilation to the tree-sitter CLI, which hardcodes MSVC's <code>cl.exe</code> and consults only the <code>CC</code> variable. <b>zig cannot be used</b> &mdash; <code>zig cc</code> rejects the host triple it is handed and takes minutes per call. Guides recommending zig describe the frozen <code>master</code> branch, which compiled parsers itself.</p>
+        <p>What works is MinGW-w64 GCC (WinLibs). Plain LLVM/clang is not enough on Windows: it targets MSVC and ships no CRT headers of its own.</p>
+        <p>winget installs WinLibs as a portable package with no PATH shim, and mason only extends PATH once it loads &mdash; after nvim-ts-autotag has already checked. <code>lua/config/toolchain.lua</code> fixes both, and is required from <code>init.lua</code> before LazyVim for exactly that reason.</p>
+      </div>
+
+      <div class="note">
+        <h3>Rebuilding a parser</h3>
+        <p>Parsers are tracked in <code>site/parser-info/&lt;lang&gt;.revision</code>, not by the compiled file. Deleting just the <code>.so</code> will <em>not</em> trigger a rebuild. Remove the revision file too, then <code>:TSUpdate</code>.</p>
+      </div>
+
+      <div class="note">
+        <h3>What was not ported</h3>
+        <p>The previous hand-written config had a <code>vim.filetype.add</code> block for .NET project files and a full yamlls setup. Neither survived, deliberately: Neovim already maps <code>.csproj</code>, <code>.fsproj</code> and <code>.props</code> to xml on its own, and LazyVim's <code>lang.yaml</code> extra already sets SchemaStore and <code>keyOrdering = false</code> &mdash; better than the hand-written version, since it also declares folding support.</p>
+        <p>The one thing that carried over is the YAML <code>indentkeys</code> fix. It is an editing behaviour rather than an LSP setting, so no extra covers it; without it, typing comments and <code>key:</code> lines in YAML yanks them to column 0.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>When something breaks</h2>
+    <div class="notes">
+      <div class="note">
+        <h3><code>:checkhealth</code></h3>
+        <p>Start here always. It reports missing external tools and plugin-specific problems, including <code>:checkhealth nvim-treesitter</code> for the compiler chain.</p>
+      </div>
+      <div class="note">
+        <h3>No C# completion</h3>
+        <p><kbd>Spc cl</kbd> for LSP info &mdash; check a <code>roslyn</code> client is attached and which solution it picked. Wrong solution: <kbd>Spc mp</kbd>. Nothing attached: <code>:LspRestart</code>. Roslyn is slow to load a big solution the first time; give it a minute.</p>
+      </div>
+      <div class="note">
+        <h3>Two C# servers, or worse completion than before</h3>
+        <p>Somebody enabled <code>lang.dotnet</code>. Turn it off in <code>:LazyExtras</code>.</p>
+      </div>
+      <div class="note">
+        <h3>Plain, unhighlighted code</h3>
+        <p>The parser is missing. <code>:TSUpdate</code>. If it complains about a C compiler, <code>lua/config/toolchain.lua</code> is not finding gcc &mdash; check the WinLibs package is still in <code>%LOCALAPPDATA%\Microsoft\WinGet\Packages</code>.</p>
+      </div>
+      <div class="note">
+        <h3>Boxes instead of icons</h3>
+        <p>The terminal font is not the Nerd Font. That is a Windows Terminal setting, not a Neovim one, and it needs a Terminal restart.</p>
+      </div>
+      <div class="note">
+        <h3>A key does something unexpected</h3>
+        <p><kbd>Spc sk</kbd> searches every keymap, and <code>:verbose map {key}</code> tells you which file bound it. Useful when a plugin has quietly claimed something.</p>
+      </div>
+      <div class="note">
+        <h3>A plugin update broke something</h3>
+        <p><code>:Lazy</code> then <kbd>r</kbd> rolls a plugin back to its lockfile version. Because this is LazyVim, upstream breaking changes usually get absorbed upstream &mdash; <code>:Lazy update</code> is more often the fix than the cause.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Verified on this machine: Neovim 0.12.5, LazyVim, .NET SDK 10.0.400 and 8.0.423, node 22.20, MinGW-w64 GCC 16.1, tree-sitter CLI 0.27.
+    Roslyn attach, solution detection and diagnostics tested against a throwaway <code>.slnx</code> solution; 27 parsers built; every keymap on this page dumped from the live config rather than transcribed.
+    Outstanding: the Nerd Font install, which needs an elevated shell.
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Global git ignore: tool-written local files that should never be committed in
+# any repo. Forward slashes only - in gitignore syntax a backslash escapes the
+# next character, so `.claude\settings.local.json` silently means
+# `.claudesettings.local.json` and matches nothing.
+
+**/.claude/settings.local.json
+**/CLAUDE.local.md

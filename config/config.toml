@@ -1,0 +1,17 @@
+[tools]
+dotnet = "latest"
+neovim = "latest"
+node = "latest"
+ripgrep = "latest"
+fd = "latest"
+zoxide = "latest"
+
+[bootstrap.services.mise-history]
+builtin = "history-watch"
+
+[dotfiles]
+"~/.bashrc" = { mode = "track" }
+"~/.config/git/ignore" = { mode = "track" }
+"~/.config/mise/config.toml" = { mode = "track" }
+"~/.config/nvim" = { mode = "track" }
+"~/.gitconfig" = { mode = "track" }

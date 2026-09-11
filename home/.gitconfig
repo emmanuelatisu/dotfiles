@@ -1,0 +1,26 @@
+[user]
+	name = Emmanuel Atisu
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = nvim
+	autocrlf = false
+
+[color]
+	ui = auto
+
+[fetch]
+	prune = true
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+# Keep credentials, the author email, and machine-specific Git settings out of
+# the repository. Create ~/.gitconfig.local on each machine when needed.
+[include]
+	path = ~/.gitconfig.local
