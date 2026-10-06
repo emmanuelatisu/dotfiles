@@ -15,10 +15,6 @@ os = ["linux"]
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
-[bootstrap.mise_shell_activate]
-bash_profile = "shims"
-bashrc = "activate"
-
 [dotfiles]
 "~/.bashrc" = { mode = "track" }
 "~/.config/gh/config.yml" = { mode = "track" }
