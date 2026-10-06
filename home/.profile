@@ -18,3 +18,10 @@ for d in "$HOME/.local/bin" "$HOME/bin"; do
 done
 unset d
 export PATH
+
+# Make mise-managed commands available to login and non-interactive clients
+# such as IDEs and Codex. Interactive Bash replaces these shims with direct
+# tool paths through the full activation in ~/.bashrc.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash --shims)"
+fi
