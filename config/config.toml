@@ -16,6 +16,8 @@ os = ["linux"]
 builtin = "history-watch"
 
 [dotfiles]
+"~/.agents/AGENTS.md" = { mode = "track" }
+"~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }

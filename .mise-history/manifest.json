@@ -8,6 +8,18 @@
       "variants": []
     },
     {
+      "path": "home/.agents/AGENTS.md",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "home/.agents/skills",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "home/.bashrc",
       "autosave": true,
       "encrypt": false,
@@ -48,6 +60,9 @@
   "recipients": [],
   "permissions": {
     "config/config.toml": 436,
+    "home/.agents/AGENTS.md": 436,
+    "home/.agents/skills": 509,
+    "home/.agents/skills/.gitkeep": 436,
     "home/.bashrc": 436,
     "home/.config/gh/config.yml": 384,
     "home/.config/nvim": 509,
