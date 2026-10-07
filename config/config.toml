@@ -19,6 +19,7 @@ builtin = "history-watch"
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
+"~/.claude/CLAUDE.md" = { mode = "track" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
