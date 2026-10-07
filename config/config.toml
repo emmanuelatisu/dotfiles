@@ -20,6 +20,7 @@ builtin = "history-watch"
 "~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
 "~/.claude/CLAUDE.md" = { mode = "track" }
+"~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
