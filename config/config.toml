@@ -25,3 +25,4 @@ builtin = "history-watch"
 "~/.config/tmux/tmux.conf" = { mode = "track" }
 "~/.gitconfig" = { mode = "track" }
 "~/.profile" = { mode = "track" }
+"~/Documents/PowerShell/profile.ps1" = { mode = "track", variants = [{ os = "windows" }] }
