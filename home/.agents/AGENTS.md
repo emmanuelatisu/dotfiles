@@ -1,3 +1,5 @@
+Use ASD-STE100 Simplified Technical English. You don't have to always 100% adhere to it, alot of use cases don't warrant full adherence. 80% to 100% is the allowed range.
+
 <!--Taken from https://github.com/multica-ai/andrej-karpathy-skills/blob/2c606141936f1eeef17fa3043a72095b4765b9c2/CLAUDE.md -->
 
 # CLAUDE.md
@@ -80,5 +82,3 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
-
-Use ASD-STE100 Simplified Technical English. You don't have to always 100% adhere to it, alot of use cases don't warrant full adherence. 80% to 100% is the allowed range.
