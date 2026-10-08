@@ -26,6 +26,12 @@
       "variants": []
     },
     {
+      "path": "home/.claude/CLAUDE.md",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "home/.config/gh/config.yml",
       "autosave": true,
       "encrypt": false,
