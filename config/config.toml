@@ -1,5 +1,5 @@
 [tools]
-dotnet = "latest"
+dotnet = ["10", "9"]
 neovim = "latest"
 node = "latest"
 ripgrep = "latest"
