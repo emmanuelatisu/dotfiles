@@ -1,5 +1,5 @@
 [tools]
-dotnet = "latest"
+dotnet = ["10", "9"]
 neovim = "latest"
 node = "latest"
 ripgrep = "latest"
@@ -19,9 +19,12 @@ builtin = "history-watch"
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
+"~/.claude/CLAUDE.md" = { mode = "track" }
+"~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
 "~/.config/tmux/tmux.conf" = { mode = "track" }
 "~/.gitconfig" = { mode = "track" }
 "~/.profile" = { mode = "track" }
+"~/Documents/PowerShell/profile.ps1" = { mode = "track", variants = [{ os = "windows" }] }
