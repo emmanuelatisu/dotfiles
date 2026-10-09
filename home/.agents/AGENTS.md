@@ -1,14 +1,12 @@
-Use ASD-STE100 Simplified Technical English. You don't have to always 100% adhere to it, alot of use cases don't warrant full adherence. 80% to 100% is the allowed range.
+- Use ASD-STE100 Simplified Technical English. You don't have to always 100% adhere to it, alot of use cases don't warrant full adherence. 80% to 100% is the allowed range.
 
 <!--Taken from https://github.com/multica-ai/andrej-karpathy-skills/blob/2c606141936f1eeef17fa3043a72095b4765b9c2/CLAUDE.md -->
-
-# CLAUDE.md
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-## Environment: Windows / Git Bash
+# Environment: Windows / Git Bash
 
 **Prevent `NUL`-file litter — don't just clean up after it.** Some Windows tools invoked through the Bash tool (notably `podman machine ssh`) write to the Windows null-device name `NUL`, but the Bash tool runs Git Bash (POSIX), which treats `NUL` as an ordinary filename and creates a real file in the process's current directory. To keep it out of the project:
 
@@ -18,7 +16,7 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 
 If a `NUL` file appears anyway, it's my artifact (not pre-existing) — delete it with `rm -f -- ./NUL` and don't disclaim it.
 
-## 1. Think Before Coding
+# Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
@@ -29,7 +27,7 @@ Before implementing:
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
 
-## 2. Simplicity First
+# Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
 
@@ -41,7 +39,7 @@ Before implementing:
 
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
-## 3. Surgical Changes
+# Surgical Changes
 
 **Touch only what you must. Clean up only your own mess.**
 
@@ -59,7 +57,7 @@ When your changes create orphans:
 
 The test: Every changed line should trace directly to the user's request.
 
-## 4. Goal-Driven Execution
+# Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
@@ -78,7 +76,5 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
