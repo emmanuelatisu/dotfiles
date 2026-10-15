@@ -6,7 +6,7 @@ return {
     opts = {
       picker = {
         sources = {
-          explorer = { hidden = true },
+          explorer = { hidden = true, ignored = true },
         },
       },
     },
