@@ -8,7 +8,7 @@ version = "latest"
 os = ["linux"]
 
 [bootstrap.apt.sources.tailscale]
-uris = "https://pkgs.tailscale.com/stable/ubuntu"
+uris = "https://pkgs.tailscale.com/stable/debian"
 components = "main"
-key = "https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg"
+key = "https://pkgs.tailscale.com/stable/debian/trixie.noarmor.gpg"
 fingerprint = "2596A99EAAB33821893C0A79458CA832957F5868"
