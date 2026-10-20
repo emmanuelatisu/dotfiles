@@ -1,2 +1,0 @@
-[bootstrap.packages]
-"apt:podman" = { version = "latest", os = "linux" }
