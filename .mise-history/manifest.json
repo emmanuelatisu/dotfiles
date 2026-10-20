@@ -2,7 +2,31 @@
   "format": 1,
   "enrollment": [
     {
+      "path": "config/config.personal.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.server.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "config/config.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.work.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/miserc.toml",
       "autosave": true,
       "encrypt": false,
       "variants": []
@@ -79,7 +103,11 @@
   "exclude": [],
   "recipients": [],
   "permissions": {
+    "config/config.personal.toml": 436,
+    "config/config.server.toml": 436,
     "config/config.toml": 436,
+    "config/config.work.toml": 436,
+    "config/miserc.toml": 436,
     "home/.agents": 509,
     "home/.agents/AGENTS.md": 436,
     "home/.agents/skills": 509,

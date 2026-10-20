@@ -1,21 +1,19 @@
 [tools]
-dotnet = ["10", "9"]
 neovim = "latest"
 node = "latest"
-ripgrep = "latest"
-fd = "latest"
-zoxide = "latest"
-gh = "latest"
 "aqua:openai/codex" = "latest"
 "aqua:anomalyco/opencode" = "latest"
-"npm:@playwright/cli" = "0.1.18"
-
-[tools."aqua:tmux/tmux-builds"]
-version = "latest"
-os = ["linux"]
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
+
+[bootstrap.packages]
+"apt:podman" = { version = "latest", os = "linux", env = ["personal", "server"] }
+"apt:tailscale" = { version = "latest", os = "linux", env = ["personal", "server"] }
+"flatpak-user:com.brave.Browser" = { version = "latest", os = "linux", env = "personal" }
+"flatpak-user:com.discordapp.Discord" = { version = "latest", os = "linux", env = "personal" }
+"flatpak-user:com.spotify.Client" = { version = "latest", os = "linux", env = "personal" }
+"flatpak-user:md.obsidian.Obsidian" = { version = "latest", os = "linux", env = "personal" }
 
 [dotfiles]
 "~/.agents/AGENTS.md" = { mode = "track" }
@@ -25,6 +23,10 @@ builtin = "history-watch"
 "~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
+"~/.config/mise/config.personal.toml" = { mode = "track" }
+"~/.config/mise/config.server.toml" = { mode = "track" }
+"~/.config/mise/config.work.toml" = { mode = "track" }
+"~/.config/mise/miserc.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
 "~/.config/tmux/tmux.conf" = { mode = "track" }
 "~/.gitconfig" = { mode = "track" }
