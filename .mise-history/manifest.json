@@ -2,7 +2,31 @@
   "format": 1,
   "enrollment": [
     {
+      "path": "config/config.containers.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.personal.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.tailnet.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "config/config.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/miserc.toml",
       "autosave": true,
       "encrypt": false,
       "variants": []
@@ -79,7 +103,11 @@
   "exclude": [],
   "recipients": [],
   "permissions": {
+    "config/config.containers.toml": 436,
+    "config/config.personal.toml": 436,
+    "config/config.tailnet.toml": 436,
     "config/config.toml": 436,
+    "config/miserc.toml": 436,
     "home/.agents/AGENTS.md": 436,
     "home/.agents/skills": 509,
     "home/.agents/skills/.gitkeep": 436,

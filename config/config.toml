@@ -17,14 +17,6 @@ os = ["linux"]
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
-[bootstrap.packages]
-"apt:podman" = { version = "latest", os = "linux" }
-"apt:tailscale" = { version = "latest", os = "linux" }
-"flatpak-user:com.brave.Browser" = { version = "latest", os = "linux" }
-"flatpak-user:com.discordapp.Discord" = { version = "latest", os = "linux" }
-"flatpak-user:com.spotify.Client" = { version = "latest", os = "linux" }
-"flatpak-user:md.obsidian.Obsidian" = { version = "latest", os = "linux" }
-
 [dotfiles]
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
@@ -33,6 +25,10 @@ builtin = "history-watch"
 "~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
+"~/.config/mise/config.containers.toml" = { mode = "track" }
+"~/.config/mise/config.personal.toml" = { mode = "track" }
+"~/.config/mise/config.tailnet.toml" = { mode = "track" }
+"~/.config/mise/miserc.toml" = { mode = "track" }
 "~/.config/nvim" = { mode = "track" }
 "~/.config/tmux/tmux.conf" = { mode = "track" }
 "~/.gitconfig" = { mode = "track" }

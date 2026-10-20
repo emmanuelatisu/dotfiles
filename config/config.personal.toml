@@ -1,0 +1,5 @@
+[bootstrap.packages]
+"flatpak-user:com.brave.Browser" = { version = "latest", os = "linux" }
+"flatpak-user:com.discordapp.Discord" = { version = "latest", os = "linux" }
+"flatpak-user:com.spotify.Client" = { version = "latest", os = "linux" }
+"flatpak-user:md.obsidian.Obsidian" = { version = "latest", os = "linux" }
