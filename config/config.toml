@@ -17,6 +17,20 @@ os = ["linux"]
 [bootstrap.services.mise-history]
 builtin = "history-watch"
 
+[bootstrap.apt.sources.tailscale]
+uris = "https://pkgs.tailscale.com/stable/ubuntu"
+components = "main"
+key = "https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg"
+fingerprint = "2596A99EAAB33821893C0A79458CA832957F5868"
+
+[bootstrap.packages]
+"apt:podman" = { version = "latest", os = "linux" }
+"apt:tailscale" = { version = "latest", os = "linux" }
+"flatpak-user:com.brave.Browser" = { version = "latest", os = "linux" }
+"flatpak-user:com.discordapp.Discord" = { version = "latest", os = "linux" }
+"flatpak-user:com.spotify.Client" = { version = "latest", os = "linux" }
+"flatpak-user:md.obsidian.Obsidian" = { version = "latest", os = "linux" }
+
 [dotfiles]
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
