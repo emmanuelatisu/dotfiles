@@ -2,7 +2,31 @@
   "format": 1,
   "enrollment": [
     {
+      "path": "config/config.personal.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.server.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
       "path": "config/config.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/config.work.toml",
+      "autosave": true,
+      "encrypt": false,
+      "variants": []
+    },
+    {
+      "path": "config/miserc.toml",
       "autosave": true,
       "encrypt": false,
       "variants": []
@@ -79,7 +103,12 @@
   "exclude": [],
   "recipients": [],
   "permissions": {
+    "config/config.personal.toml": 436,
+    "config/config.server.toml": 436,
     "config/config.toml": 436,
+    "config/config.work.toml": 436,
+    "config/miserc.toml": 436,
+    "home/.agents": 509,
     "home/.agents/AGENTS.md": 436,
     "home/.agents/skills": 509,
     "home/.agents/skills/.gitkeep": 436,
@@ -102,6 +131,9 @@
     "home/.agents/skills/review": 509,
     "home/.agents/skills/testaudit": 509,
     "home/.bashrc": 436,
+    "home/.claude": 509,
+    "home/.config": 509,
+    "home/.config/gh": 505,
     "home/.config/gh/config.yml": 384,
     "home/.config/nvim": 509,
     "home/.config/nvim/.neoconf.json": 436,
@@ -122,6 +154,7 @@
     "home/.config/nvim/lua/plugins/example.lua": 436,
     "home/.config/nvim/lua/plugins/snacks.lua": 436,
     "home/.config/nvim/stylua.toml": 436,
+    "home/.config/tmux": 509,
     "home/.config/tmux/tmux.conf": 436,
     "home/.gitconfig": 436,
     "home/.profile": 436
