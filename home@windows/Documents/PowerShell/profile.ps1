@@ -18,3 +18,8 @@ if (Get-Command mise -ErrorAction SilentlyContinue) {
         Set-ItemProperty HKCU:\Environment -Name Path -Type ExpandString -Value "$miseShims;$userPath"
     }
 }
+
+# zoxide takes over `cd`. Guarded, so a machine without it still gets a shell.
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& { (zoxide init --cmd cd powershell | Out-String) })
+}
