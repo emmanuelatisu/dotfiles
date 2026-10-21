@@ -3,6 +3,7 @@ neovim = "latest"
 node = "latest"
 "aqua:openai/codex" = "latest"
 "aqua:anomalyco/opencode" = "latest"
+claude = "latest"
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
