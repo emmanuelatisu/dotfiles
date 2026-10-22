@@ -24,7 +24,8 @@ builtin = "history-watch"
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
-"~/.claude/CLAUDE.md" = { mode = "track" }
+"~/.claude/CLAUDE.md" = { source = "~/.agents/AGENTS.md", mode = "symlink" }
+"~/.codex/AGENTS.md" = { source = "~/.agents/AGENTS.md", mode = "symlink" }
 "~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }

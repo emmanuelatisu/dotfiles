@@ -50,12 +50,6 @@
       "variants": []
     },
     {
-      "path": "home/.claude/CLAUDE.md",
-      "autosave": true,
-      "encrypt": false,
-      "variants": []
-    },
-    {
       "path": "home/.config/gh/config.yml",
       "autosave": true,
       "encrypt": false,
@@ -131,7 +125,6 @@
     "home/.agents/skills/review": 509,
     "home/.agents/skills/testaudit": 509,
     "home/.bashrc": 436,
-    "home/.claude": 509,
     "home/.config": 509,
     "home/.config/gh": 505,
     "home/.config/gh/config.yml": 384,
