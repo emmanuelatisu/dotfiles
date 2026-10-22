@@ -1,6 +1,3 @@
-[settings]
-dotfiles.windows_symlinks = true
-
 [tools]
 neovim = "latest"
 node = "latest"
