@@ -3,6 +3,11 @@ neovim = "latest"
 node = "latest"
 "aqua:openai/codex" = "latest"
 "aqua:anomalyco/opencode" = "latest"
+claude = "latest"
+hunk = "latest"
+ripgrep = "latest"
+fd = "latest"
+zoxide = "latest"
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
@@ -19,7 +24,8 @@ builtin = "history-watch"
 "~/.agents/AGENTS.md" = { mode = "track" }
 "~/.agents/skills" = { mode = "track" }
 "~/.bashrc" = { mode = "track" }
-"~/.claude/CLAUDE.md" = { mode = "track" }
+"~/.claude/CLAUDE.md" = { source = "~/.agents/AGENTS.md", mode = "symlink" }
+"~/.codex/AGENTS.md" = { source = "~/.agents/AGENTS.md", mode = "symlink" }
 "~/.claude/skills/*" = { source = "~/.agents/skills/*", mode = "symlink" }
 "~/.config/gh/config.yml" = { mode = "track" }
 "~/.config/mise/config.toml" = { mode = "track" }
