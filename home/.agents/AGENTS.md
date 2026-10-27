@@ -1,4 +1,4 @@
-- Use ASD-STE100 Simplified Technical English unless i explicitly tell you to speak differently
+- Use ASD-STE100 Simplified Technical English unless i explicitly tell you to speak differently. If you are writing german apply the same rules.
 
 # Environment: Windows / Git Bash
 
