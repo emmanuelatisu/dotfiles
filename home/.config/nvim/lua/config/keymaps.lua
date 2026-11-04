@@ -9,3 +9,6 @@
 -- you pause immediately after a j - typing "json" at speed is unaffected,
 -- because the `o` resolves the ambiguity instantly.
 vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape insert mode" })
+vim.keymap.set("i", "<C-j>", function()
+  require("blink.cmp").show()
+end, { desc = "Show completion" })
