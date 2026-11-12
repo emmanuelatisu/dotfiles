@@ -8,6 +8,7 @@ hunk = "latest"
 ripgrep = "latest"
 fd = "latest"
 zoxide = "latest"
+dotnet = "11"
 
 [bootstrap.services.mise-history]
 builtin = "history-watch"
